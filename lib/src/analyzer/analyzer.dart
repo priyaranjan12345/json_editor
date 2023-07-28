@@ -134,19 +134,16 @@ class JsonAnalyzer {
   Token _analyzeArray(Token token) {
     assert(token.next != null);
     var advanceToken = token.next!;
-    Error? error;
+
     while (!advanceToken.isEof && !optional(']', advanceToken)) {
       advanceToken = _analyzeValue(advanceToken);
     }
-    if (error == null) {
-      if (optional(']', advanceToken)) {
-        assert(advanceToken.next != null);
-        return advanceToken.next!;
-      }
-      throw UnexpectedError(charOffset: advanceToken.charOffset);
-    } else {
-      throw error;
+
+    if (optional(']', advanceToken)) {
+      assert(advanceToken.next != null);
+      return advanceToken.next!;
     }
+    throw UnexpectedError(charOffset: advanceToken.charOffset);
   }
 
   bool optional(String value, Token token) {

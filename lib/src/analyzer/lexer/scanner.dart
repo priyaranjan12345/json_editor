@@ -712,7 +712,6 @@ abstract class Scanner {
     //     next
     //      v
     //     EOF
-    TokenType type = closeBraceInfoFor(begin);
     // appendToken(SyntheticToken(type, tokenStart)..beforeSynthetic = tail);
     begin.endToken = tail;
     prependErrorToken(UnmatchedToken(begin));
