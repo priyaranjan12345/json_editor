@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:json_editor/src/util/link.dart';
@@ -863,7 +865,7 @@ class Utf8BytesScanner extends Scanner {
   int stringOffsetSlackOffset = -1;
 
   bool containsBomAt(int offset) {
-    const List<int> BOM_UTF8 = const [0xEF, 0xBB, 0xBF];
+    const List<int> BOM_UTF8 = [0xEF, 0xBB, 0xBF];
 
     return offset + 3 < bytes.length &&
         bytes[offset] == BOM_UTF8[0] &&
@@ -898,13 +900,13 @@ class Utf8BytesScanner extends Scanner {
     if (expectedHighBytes == 1 || numBytes != expectedHighBytes) {
       return unicodeReplacementCharacterRune;
     }
-    // TODO(lry): measurably slow, decode creates first a Utf8Decoder and a
+    // todo(lry): measurably slow, decode creates first a Utf8Decoder and a
     // _Utf8Decoder instance. Also the sublist is eagerly allocated.
     String codePoint =
         utf8.decode(bytes.sublist(startOffset, end), allowMalformed: true);
-    if (codePoint.length == 0) {
+    if (codePoint.isEmpty) {
       // The UTF-8 decoder discards leading BOM characters.
-      // TODO(floitsch): don't just assume that removed characters were the
+      // todo(floitsch): don't just assume that removed characters were the
       // BOM.
       assert(containsBomAt(startOffset));
       codePoint = String.fromCharCode(unicodeBomCharacterRune);
@@ -996,7 +998,7 @@ class Utf8BytesScanner extends Scanner {
   @override
   void handleUnicode(int startScanOffset) {
     int end = byteOffset;
-    // TODO(lry): this measurably slows down the scanner for files with unicode.
+    // todo(lry): this measurably slows down the scanner for files with unicode.
     String s =
         utf8.decode(bytes.sublist(startScanOffset, end), allowMalformed: true);
     utf8Slack += (end - startScanOffset) - s.length;

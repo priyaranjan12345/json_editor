@@ -203,43 +203,61 @@ class _JsonEditorState extends State<JsonEditor> {
           }
         }
       },
-      child: TextField(
-        readOnly: !widget.enabled,
-        focusNode: _editFocus,
-        controller: _editController,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            isDense: true,
-            errorText: _errMessage,
-            errorMaxLines: 10),
-        keyboardType: TextInputType.multiline,
-        expands: true,
-        maxLines: null,
-        minLines: null,
-        onChanged: (s) {
-          if (_currentKeyEvent?.logicalKey == LogicalKeyboardKey.enter) {
-            // Enter key
-            var editingOffset = _editController.selection.baseOffset;
-            if (editingOffset == 0) {
-              return;
-            }
-            _enterFormat();
-          } else if (_currentKeyEvent?.logicalKey ==
-                  LogicalKeyboardKey.braceLeft ||
-              _currentKeyEvent?.logicalKey == LogicalKeyboardKey.braceRight) {
-            _closingFormat(open: '{', close: '}');
-          } else if (_currentKeyEvent?.logicalKey ==
-                  LogicalKeyboardKey.bracketLeft ||
-              _currentKeyEvent?.logicalKey == LogicalKeyboardKey.bracketRight) {
-            _closingFormat(open: '[', close: ']');
-          } else if (_currentKeyEvent?.logicalKey == LogicalKeyboardKey.quote) {
-            _closingFormat(open: '"', close: '"');
-          }
-          _lastInput = DateTime.now();
-          //Analyze json syntax
-          _analyze();
-          _undoRedoInput(s);
-        },
+      child: Row(
+        children: [
+          Flexible(
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _undoRedo.redo()?.split('\n').length ?? 100,
+              itemBuilder: (context, index) => Text('${index + 1}'),
+            ),
+          ),
+          Expanded(
+            flex: 60,
+            child: TextField(
+              readOnly: !widget.enabled,
+              focusNode: _editFocus,
+              controller: _editController,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                errorText: _errMessage,
+                errorMaxLines: 10,
+              ),
+              keyboardType: TextInputType.multiline,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              onChanged: (s) {
+                if (_currentKeyEvent?.logicalKey == LogicalKeyboardKey.enter) {
+                  // Enter key
+                  var editingOffset = _editController.selection.baseOffset;
+                  if (editingOffset == 0) {
+                    return;
+                  }
+                  _enterFormat();
+                } else if (_currentKeyEvent?.logicalKey ==
+                        LogicalKeyboardKey.braceLeft ||
+                    _currentKeyEvent?.logicalKey ==
+                        LogicalKeyboardKey.braceRight) {
+                  _closingFormat(open: '{', close: '}');
+                } else if (_currentKeyEvent?.logicalKey ==
+                        LogicalKeyboardKey.bracketLeft ||
+                    _currentKeyEvent?.logicalKey ==
+                        LogicalKeyboardKey.bracketRight) {
+                  _closingFormat(open: '[', close: ']');
+                } else if (_currentKeyEvent?.logicalKey ==
+                    LogicalKeyboardKey.quote) {
+                  _closingFormat(open: '"', close: '"');
+                }
+                _lastInput = DateTime.now();
+                //Analyze json syntax
+                _analyze();
+                _undoRedoInput(s);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -303,7 +321,6 @@ class _JsonEditorState extends State<JsonEditor> {
             TextPosition(offset: editingOffset + indent.length));
       }
       if (lastPreWord == '{' || lastPreWord == '[') {
-        //缩进
         var newIndent = indent + jsonFormatIndent;
         if (editingWord == '}' || editingWord == ']') {
           newIndent += '\n' + indent;

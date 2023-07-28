@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:json_editor/json_editor.dart';
+import 'notifier/theme_notifier.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,116 +12,120 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(),
+    final themeNotifier = ThemeNotifier();
+
+    return ListenableBuilder(
+      listenable: themeNotifier,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            useMaterial3: true,
+            brightness: themeNotifier.theme,
+            appBarTheme: const AppBarTheme(
+              elevation: 1,
+            ),
+          ),
+          home: MyHomePage(themeNotifier: themeNotifier),
+        );
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required this.themeNotifier}) : super(key: key);
+
+  final ThemeNotifier themeNotifier;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _darkMode = false;
   JsonElement? _elementResult;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: _darkMode
-            ? ThemeData.dark().scaffoldBackgroundColor
-            : ThemeData.light().scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: const Text('JsonEditor'),
-        ),
-        body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Switch(
-                        value: _darkMode,
-                        onChanged: (b) {
-                          setState(() {
-                            _darkMode = b;
-                          });
-                        }),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Dark Mode',
-                      style: TextStyle(
-                          color: _darkMode ? Colors.white : Colors.black),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ObjectDemoPage(
-                                    obj: _elementResult?.toObject(),
-                                  )));
-                        },
-                        child: Text('Object Demo')),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ElementDemoPage(
-                                    element: _elementResult,
-                                  )));
-                        },
-                        child: Text('Element Demo')),
-                  ],
-                ),
-                Expanded(
-                  child: Theme(
-                    data: _darkMode ? ThemeData.dark() : ThemeData.light(),
-                    child: JsonEditor.string(
-                      jsonString: '''
-                      {
-                        // This is a comment
-                        "name": "young chan",
-                        "number": 100,
-                        "boo": true,
-                        "user": {"age": 20, "tall": 1.8},
-                        "cities": ["beijing", "shanghai", "shenzhen"]
-                      }''',
-                      onValueChanged: (value) {
-                        _elementResult = value;
-                        print(value);
-                      },
-                    ),
+      appBar: AppBar(
+        title: const Text('JsonEditor'),
+        actions: [
+          Row(
+            children: [
+              Switch(
+                value: widget.themeNotifier.isDarkMode,
+                onChanged: (b) {
+                  widget.themeNotifier.toggleTheme(b);
+                },
+              ),
+              const Text('Dark Mode'),
+            ],
+          ),
+          const VerticalDivider(),
+          ElevatedButton(
+            onPressed: () {
+              _elementResult?.toPrettyString();
+            },
+            child: const Text('format Json'),
+          ),
+          const VerticalDivider(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ObjectDemoPage(
+                    obj: _elementResult?.toObject(),
                   ),
-                )
-              ],
-            )));
+                ),
+              );
+            },
+            child: const Text('Object Demo'),
+          ),
+          const VerticalDivider(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ElementDemoPage(
+                    element: _elementResult,
+                  ),
+                ),
+              );
+            },
+            child: const Text('Element Demo'),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Theme(
+          data: widget.themeNotifier.isDarkMode
+              ? ThemeData.dark()
+              : ThemeData.light(),
+          child: JsonEditor.string(
+            jsonString: '''
+                {
+                  // This is a comment
+                  "name": "young chan",
+                  "number": 100,
+                  "boo": true,
+                  "user": {"age": 20, "tall": 1.8},
+                  "cities": ["beijing", "shanghai", "shenzhen"]
+                }''',
+            onValueChanged: (value) {
+              _elementResult = value;
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
+// Object demo
 class ObjectDemoPage extends StatelessWidget {
   const ObjectDemoPage({Key? key, this.obj}) : super(key: key);
 
@@ -127,7 +134,7 @@ class ObjectDemoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Object Demo'),
+        title: const Text('Object Demo'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -135,9 +142,8 @@ class ObjectDemoPage extends StatelessWidget {
           object: obj,
           onValueChanged: (value) {
             var json = value.toJson();
-            print(json);
             var fromJson = JsonElement.fromJson(json);
-            print(fromJson);
+            log(fromJson.toString());
           },
         ),
       ),
@@ -145,6 +151,7 @@ class ObjectDemoPage extends StatelessWidget {
   }
 }
 
+// Element demo
 class ElementDemoPage extends StatelessWidget {
   const ElementDemoPage({Key? key, this.element}) : super(key: key);
 
@@ -154,7 +161,7 @@ class ElementDemoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Element Demo'),
+        title: const Text('Element Demo'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -162,11 +169,35 @@ class ElementDemoPage extends StatelessWidget {
           element: element,
           onValueChanged: (value) {
             var json = value.toJson();
-            print(json);
             var fromJson = JsonElement.fromJson(json);
-            print(fromJson);
+            log(fromJson.toString());
           },
         ),
+      ),
+    );
+  }
+}
+
+/// vertival devider
+class VerticalDivider extends StatelessWidget {
+  const VerticalDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 6,
+        horizontal: 8,
+      ),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        height: double.infinity,
+        width: 2,
       ),
     );
   }

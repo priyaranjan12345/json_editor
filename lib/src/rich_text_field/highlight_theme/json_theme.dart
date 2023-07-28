@@ -18,53 +18,75 @@ class JsonTheme implements HighlightTheme {
     TextStyle? commentStyle,
     TextStyle? errorStyle,
   })  : defaultStyle = defaultStyle ??
-            TextStyle(color: Colors.blueGrey.shade900, fontSize: 14),
+            TextStyle(
+              color: Colors.blueGrey.shade900,
+              fontSize: 16,
+            ),
         bracketStyle = bracketStyle ??
-            TextStyle(color: Colors.blueGrey.shade900, fontSize: 14),
-        numberStyle =
-            numberStyle ?? TextStyle(color: Colors.blue.shade500, fontSize: 14),
+            TextStyle(
+              color: Colors.blueGrey.shade900,
+              fontSize: 16,
+            ),
+        numberStyle = numberStyle ??
+            TextStyle(
+              color: Colors.blue.shade500,
+              fontSize: 16,
+            ),
         stringStyle = stringStyle ??
-            TextStyle(color: Colors.green.shade800, fontSize: 14),
-        boolStyle =
-            boolStyle ?? TextStyle(color: Colors.orange.shade800, fontSize: 14),
+            TextStyle(
+              color: Colors.green.shade800,
+              fontSize: 16,
+            ),
+        boolStyle = boolStyle ??
+            TextStyle(
+              color: Colors.orange.shade800,
+              fontSize: 16,
+            ),
         keyStyle = keyStyle ??
-            TextStyle(color: Colors.blueGrey.shade600, fontSize: 14),
+            TextStyle(
+              color: Colors.blueGrey.shade600,
+              fontSize: 16,
+            ),
         commentStyle = commentStyle ??
-            TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
         errorStyle = errorStyle ??
             TextStyle(
-                color: Colors.red.shade600,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-                decoration: TextDecoration.underline);
+              color: Colors.red.shade600,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              decoration: TextDecoration.underline,
+            );
 
   factory JsonTheme.light() => JsonTheme(
-      defaultStyle: TextStyle(color: Colors.blueGrey.shade900, fontSize: 14),
-      bracketStyle: TextStyle(color: Colors.blueGrey.shade900, fontSize: 14),
-      numberStyle: TextStyle(color: Colors.blue.shade500, fontSize: 14),
-      stringStyle: TextStyle(color: Colors.green.shade800, fontSize: 14),
-      boolStyle: TextStyle(color: Colors.orange.shade800, fontSize: 14),
-      keyStyle: TextStyle(color: Colors.blueGrey.shade600, fontSize: 14),
-      commentStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+      defaultStyle: TextStyle(color: Colors.blueGrey.shade900, fontSize: 16),
+      bracketStyle: TextStyle(color: Colors.blueGrey.shade900, fontSize: 16),
+      numberStyle: TextStyle(color: Colors.blue.shade500, fontSize: 16),
+      stringStyle: TextStyle(color: Colors.green.shade800, fontSize: 16),
+      boolStyle: TextStyle(color: Colors.orange.shade800, fontSize: 16),
+      keyStyle: TextStyle(color: Colors.blueGrey.shade600, fontSize: 16),
+      commentStyle: TextStyle(color: Colors.grey.shade600, fontSize: 16),
       errorStyle: TextStyle(
           color: Colors.red.shade600,
-          fontSize: 14,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
           decoration: TextDecoration.underline));
 
   factory JsonTheme.dark() => JsonTheme(
-      defaultStyle: TextStyle(color: Colors.white, fontSize: 14),
-      bracketStyle: TextStyle(color: Colors.white70, fontSize: 14),
-      numberStyle: TextStyle(color: Colors.blue.shade500, fontSize: 14),
-      stringStyle: TextStyle(color: Colors.green.shade800, fontSize: 14),
-      boolStyle: TextStyle(color: Colors.orange.shade800, fontSize: 14),
-      keyStyle: TextStyle(color: Colors.blueGrey.shade200, fontSize: 14),
-      commentStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+      defaultStyle: const TextStyle(color: Colors.white, fontSize: 16),
+      bracketStyle: const TextStyle(color: Colors.white70, fontSize: 16),
+      numberStyle: TextStyle(color: Colors.blue.shade500, fontSize: 16),
+      stringStyle: TextStyle(color: Colors.green.shade800, fontSize: 16),
+      boolStyle: TextStyle(color: Colors.orange.shade800, fontSize: 16),
+      keyStyle: TextStyle(color: Colors.blueGrey.shade200, fontSize: 16),
+      commentStyle: TextStyle(color: Colors.grey.shade600, fontSize: 16),
       errorStyle: TextStyle(
           color: Colors.red.shade600,
-          fontSize: 14,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
           decoration: TextDecoration.underline));
